@@ -16,7 +16,8 @@
     <div class="stamp stamp-red tilt">Совершенно секретно</div>
     <h1>Тренажёр допроса у&nbsp;Иры</h1>
     <p class="lead">Агент <b data-agent></b>, завтра у&nbsp;вас контакт с&nbsp;объектом «Ира».</p>
-    <p class="muted">Объект опасен: задаёт наводящие вопросы, переспрашивает детали и&nbsp;чует ложь за&nbsp;километр. Ваша задача — удержать легенду и&nbsp;не&nbsp;расколоться.</p>
+    <p class="muted">Объект уже знает легенду и&nbsp;может вернуться к&nbsp;теме. Будет переспрашивать детали и&nbsp;ловить на&nbsp;мелочах.</p>
+    <p class="muted">Держаться до&nbsp;конца или сдаться — решать тебе. Кнопка «Признаться» всегда под рукой.</p>
     <div class="spacer"></div>
     <button class="btn" id="toBriefing">Начать подготовку</button>
   </section>
@@ -27,12 +28,12 @@
         <span>Дело №&nbsp;0112</span>
         <span class="stamp stamp-small">Легенда</span>
       </div>
-      <h2>Что случилось «на&nbsp;самом деле»</h2>
+      <h2>Что ты ей рассказала</h2>
       <dl id="legendList"></dl>
       <h3>Правила агента</h3>
       <ul id="rulesList"></ul>
     </div>
-    <button class="btn" id="toInterrogation">Выучила. К&nbsp;допросу →</button>
+    <button class="btn" id="toInterrogation">Помню. К&nbsp;допросу →</button>
   </section>
 
   <section id="interrogation" class="screen chat-screen">
@@ -42,12 +43,12 @@
         <div class="name">Ира</div>
         <div class="status" id="status">сидит напротив</div>
       </div>
-      <div class="qcount" id="qcount"></div>
+      <button class="confess-btn" id="confessBtn">🏳️ Признаться</button>
     </header>
     <div class="meter" id="meter" data-level="cool">
       <div class="meter-label"><span>Подозрение Иры</span><span id="meterPct">0%</span></div>
       <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
-      <div class="meter-hint" id="meterHint"></div>
+      <div class="meter-foot"><span class="meter-hint" id="meterHint"></span><span class="qcount" id="qcount"></span></div>
     </div>
     <div class="chat" id="chat"></div>
     <div class="answers" id="answers"></div>
@@ -56,7 +57,7 @@
   <section id="fail" class="screen center">
     <div class="big-emoji">🚨</div>
     <div class="stamp stamp-red tilt">Провал</div>
-    <h2>Ира всё поняла</h2>
+    <h2>Ира всё поняла сама</h2>
     <p class="muted">Последней каплей стало:</p>
     <blockquote id="failQuote"></blockquote>
     <div class="spacer"></div>
@@ -64,18 +65,33 @@
     <button class="btn btn-ghost" id="reviewLegend">Перечитать легенду</button>
   </section>
 
+  <section id="confess" class="screen center">
+    <div class="big-emoji">🏳️</div>
+    <div class="stamp stamp-amber tilt">Рассекречено</div>
+    <h2>Агент сдалась сама</h2>
+    <p class="lead">Продержалась <b id="confessHeld"></b></p>
+    <p class="muted" id="confessVerdict"></p>
+    <div class="mini-chat" id="confessChat"></div>
+    <div class="spacer"></div>
+    <button class="btn" id="retryFromConfess">Ещё раз</button>
+  </section>
+
   <section id="win" class="screen center">
     <div class="cert">
-      <div class="cert-kicker">Сертификат допуска №&nbsp;<span id="certNo"></span></div>
-      <h2>Допущена к&nbsp;встрече</h2>
-      <p>Агент <b data-agent></b> прошла тренажёр допроса у&nbsp;Иры и&nbsp;признана годной к&nbsp;контакту с&nbsp;объектом.</p>
+      <div class="cert-kicker">Сертификат №&nbsp;<span id="certNo"></span></div>
+      <h2>Выстояла</h2>
+      <p>Агент <b data-agent></b> выдержала допрос у&nbsp;Иры и&nbsp;не&nbsp;раскололась.</p>
       <div class="cert-grid">
         <div><span>Уровень покерфейса</span><b id="certLevel"></b></div>
         <div><span>Подозрение Иры</span><b id="certPct"></b></div>
         <div><span>Дата операции</span><b id="certDate"></b></div>
       </div>
       <p class="cert-note" id="certNote"></p>
-      <div class="stamp stamp-round">Допущена</div>
+      <div class="stamp stamp-round">Выстояла</div>
+    </div>
+    <div class="ideas">
+      <h3>Если всё-таки признаваться — то красиво</h3>
+      <ul id="ideasList"></ul>
     </div>
     <button class="btn" id="retryFromWin">Пройти ещё раз</button>
   </section>

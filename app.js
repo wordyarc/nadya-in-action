@@ -7,6 +7,7 @@
   const answers = $("#answers");
   const statusEl = $("#status");
   const meter = $("#meter");
+  const confessBtn = $("#confessBtn");
 
   let suspicion = 0;
   let qi = 0;
@@ -32,6 +33,14 @@
     try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {}
   }
 
+  function fillList(el, items) {
+    items.forEach((t) => {
+      const li = document.createElement("li");
+      li.textContent = t;
+      el.appendChild(li);
+    });
+  }
+
   document.querySelectorAll("[data-agent]").forEach((el) => (el.textContent = LEGEND.agent));
 
   // ---------- брифинг ----------
@@ -43,24 +52,20 @@
     row.querySelector("dd").textContent = v;
     dl.appendChild(row);
   });
-  const ul = $("#rulesList");
-  BRIEFING.rules.forEach((r) => {
-    const li = document.createElement("li");
-    li.textContent = r;
-    ul.appendChild(li);
-  });
+  fillList($("#rulesList"), BRIEFING.rules);
+  fillList($("#ideasList"), CONFESS.ideas);
 
   // ---------- чат ----------
   function scrollDown() {
     chat.scrollTo({ top: chat.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" });
   }
 
-  function bubble(who, text) {
+  function bubble(who, text, into = chat) {
     const b = document.createElement("div");
     b.className = `msg ${who}`;
     b.textContent = text;
-    chat.appendChild(b);
-    scrollDown();
+    into.appendChild(b);
+    if (into === chat) scrollDown();
   }
 
   async function ira(lines, r) {
@@ -140,6 +145,12 @@
 
     if (!(await ira(a.reaction, r))) return;
 
+    if (a.confess) {
+      await sleep(900);
+      if (r === run) confessEnd();
+      return;
+    }
+
     if (suspicion >= 100) {
       await sleep(900);
       if (r === run) fail(a.text);
@@ -158,7 +169,7 @@
       if (r === run) win();
       return;
     }
-    $("#qcount").textContent = `${qi + 1}/${QUESTIONS.length}`;
+    $("#qcount").textContent = `вопрос ${qi + 1}/${QUESTIONS.length}`;
     if (!(await ira(QUESTIONS[qi].ira, r))) return;
     renderAnswers(QUESTIONS[qi], r);
   }
@@ -168,8 +179,10 @@
     clearTimeout(timer);
     const r = run;
     qi = 0;
+    locked = false;
     chat.innerHTML = "";
     answers.innerHTML = "";
+    confessBtn.disabled = false;
     setSuspicion(0);
     statusEl.textContent = "сидит напротив";
     show("interrogation");
@@ -177,12 +190,39 @@
     next(r);
   }
 
+  // ---------- признание по кнопке ----------
+  confessBtn.addEventListener("click", async () => {
+    run++; // обрываем текущий вопрос
+    const r = run;
+    clearTimeout(timer);
+    locked = true;
+    confessBtn.disabled = true;
+    answers.innerHTML = "";
+    chat.querySelectorAll(".typing").forEach((t) => t.remove());
+    bubble("me", CONFESS.line);
+    await sleep(400);
+    if (!(await ira(CONFESS.iraNow, r))) return;
+    await sleep(900);
+    if (r === run) confessEnd();
+  });
+
   // ---------- финалы ----------
   function fail(text) {
     run++;
     vibrate([120, 60, 120, 60, 200]);
     $("#failQuote").textContent = `«${text}»`;
     show("fail");
+  }
+
+  function confessEnd() {
+    run++;
+    const held = Math.min(qi, QUESTIONS.length);
+    $("#confessHeld").textContent = `${held} из ${QUESTIONS.length} вопросов`;
+    $("#confessVerdict").textContent = CONFESS.verdicts.find(([max]) => held <= max)[1];
+    const mini = $("#confessChat");
+    mini.innerHTML = "";
+    CONFESS.iraLater.forEach((line) => bubble("ira", line, mini));
+    show("confess");
   }
 
   function win() {
@@ -202,5 +242,6 @@
   $("#toInterrogation").addEventListener("click", start);
   $("#retryFromFail").addEventListener("click", start);
   $("#reviewLegend").addEventListener("click", () => show("briefing"));
+  $("#retryFromConfess").addEventListener("click", start);
   $("#retryFromWin").addEventListener("click", start);
 })();
