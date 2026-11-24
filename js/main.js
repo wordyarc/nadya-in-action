@@ -1,4 +1,5 @@
 import { SITE, PHOTOS, YOUTUBE } from "./data.js";
+import { initFly } from "./fly.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -155,16 +156,5 @@ if (SITE.youtube) {
 }
 $("#year").textContent = new Date().getFullYear();
 
-/* ---------- 3D ---------- */
-const hero = $("#hero");
-import("./ring.js")
-  .then((m) =>
-    m.initRing($("#stage"), {
-      photos: PHOTOS,
-      title: SITE.name,
-      reduceMotion,
-      onPick: (i) => openPhoto(i),
-    })
-  )
-  .then(() => hero.classList.add("is-3d"))
-  .catch((err) => console.warn("3D выключено:", err));
+/* ---------- герой ---------- */
+initFly({ photos: PHOTOS, videos: YOUTUBE.list, reduceMotion, onPhoto: openPhoto });

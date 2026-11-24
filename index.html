@@ -18,10 +18,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Onest:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,500;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 
-  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" crossorigin>
-  <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }
-  </script>
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
@@ -38,22 +34,33 @@
 
   <main id="top">
 
-    <!-- ===== Герой с 3D-кольцом ===== -->
-    <section class="hero" id="hero">
-      <div class="hero-stage" id="stage"></div>
+    <!-- ===== Герой: полёт сквозь дневник ===== -->
+    <section class="fly" id="hero">
+      <div class="fly-view">
+        <div class="fly-scene" id="flyScene">
+          <h1 class="fly-item fly-title" style="--x:0;--y:-3;--z:0;--rot:0">Надя</h1>
+          <div class="fly-item fly-end" style="--x:0;--y:-2;--z:calc(var(--depth) * -1);--rot:0" aria-hidden="true">
+            <span class="fly-end-logo">SM <em>daily</em></span>
+            <span class="fly-end-sub">дневник обычных дней</span>
+          </div>
+          <!-- фото, обложки и эмодзи добавляет js/fly.js -->
+        </div>
 
-      <div class="hero-fallback" aria-hidden="true">
-        <img src="img/leaves-sm.webp" alt="" style="--x:-34vw;--y:-16svh;--r:-8deg">
-        <img src="img/wardrobe-sm.webp" alt="" style="--x:30vw;--y:-18svh;--r:6deg">
-        <img src="img/pond-sm.webp" alt="" style="--x:-28vw;--y:18svh;--r:5deg">
-        <img src="img/flowers-sm.webp" alt="" style="--x:32vw;--y:16svh;--r:-6deg">
-      </div>
-
-      <h1 class="hero-title">Надя</h1>
-
-      <div class="hero-foot">
-        <p class="hero-tag">блогер · учитель · <span class="hand">просто Надя</span></p>
-        <p class="hero-hint"><span aria-hidden="true">←</span> покрути <span aria-hidden="true">→</span></p>
+        <div class="fly-ui">
+          <p class="fly-tag">блогер · учитель · <span class="hand">просто Надя</span></p>
+          <div class="fly-links">
+            <a class="fly-link fly-link-tg" data-tg target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2 1.8 11.7c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3Z"/></svg>
+              Telegram
+            </a>
+            <a class="fly-link fly-link-yt" data-yt target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.7 15.1V8.9l5.8 3.1-5.8 3.1Z"/></svg>
+              YouTube
+            </a>
+          </div>
+          <p class="fly-hint">листай <span aria-hidden="true">↓</span></p>
+          <div class="fly-progress" aria-hidden="true"><span></span></div>
+        </div>
       </div>
     </section>
 

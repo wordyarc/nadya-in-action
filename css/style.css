@@ -98,7 +98,7 @@ p { text-wrap: pretty; }
   .nav {
     animation: nav-bg linear both;
     animation-timeline: scroll(root);
-    animation-range: 60svh 90svh;
+    animation-range: 375svh 390svh;
   }
   @keyframes nav-bg {
     to {
@@ -109,79 +109,170 @@ p { text-wrap: pretty; }
   }
 }
 
-/* ---------- герой ---------- */
-.hero {
+/* ---------- герой: полёт сквозь дневник ---------- */
+@property --p { syntax: "<number>"; inherits: true; initial-value: 0; }
+
+.fly {
+  --depth: 5200;        /* путь камеры в px; совпадает с раскладкой в fly.js */
   position: relative;
+  height: 480svh;
+}
+@supports (animation-timeline: view()) {
+  .fly {
+    animation: fly-p linear both;
+    animation-timeline: view();
+    animation-range: contain 0% contain 100%;
+  }
+}
+@keyframes fly-p { from { --p: 0; } to { --p: 1; } }
+
+.fly-view {
+  position: sticky;
+  top: 0;
   height: 100svh;
-  min-height: 560px;
   overflow: hidden;
-  display: grid;
-  place-items: center;
+  perspective: 1000px;
   background:
-    radial-gradient(60% 50% at 50% 55%, #fbf5ec 0%, transparent 70%),
+    radial-gradient(60% 55% at 50% 48%, #fdf8f0 0%, transparent 70%),
     var(--bg);
 }
-.hero-stage { position: absolute; inset: 0; z-index: 1; touch-action: pan-y; }
-.hero-stage canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  opacity: 0;
-  transition: opacity 1.2s ease;
-}
-.hero.is-3d .hero-stage canvas { opacity: 1; }
-
-.hero-title {
-  position: relative;
-  z-index: 2;
-  font-size: clamp(96px, 24vw, 260px);
-  font-style: italic;
-  pointer-events: none;
-  transition: opacity .6s;
-}
-.hero.is-3d .hero-title {
-  /* имя рисуется внутри 3D-сцены, а этот заголовок остаётся для скринридеров */
+.fly-scene {
   position: absolute;
-  width: 1px; height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--my, 0) * 5deg)) rotateY(calc(var(--mx, 0) * -7deg));
 }
 
-.hero-fallback { position: absolute; inset: 0; display: grid; place-items: center; transition: opacity .8s; }
-.hero-fallback img {
-  grid-area: 1 / 1;
-  width: clamp(110px, 22vw, 220px);
-  padding: 8px 8px 30px;
+.fly-item {
+  --ze: calc(var(--z) + var(--p) * var(--depth));
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform:
+    translate(-50%, -50%)
+    translate3d(calc(var(--x) * 1vw), calc(var(--y) * 1svh), calc(var(--ze) * 1px))
+    rotateY(calc(var(--x) * -0.4deg))
+    rotate(calc(var(--rot) * 1deg));
+  /* выплывает из тумана вдали и тает, пролетая мимо камеры */
+  opacity: calc(clamp(0, (var(--ze) + 1800) / 800, 1) * clamp(0, (720 - var(--ze)) / 380, 1));
+  will-change: transform, opacity;
+}
+
+.fly-title {
+  font-size: clamp(110px, 27vw, 310px);
+  font-style: italic;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: clamp(0, (620 - var(--ze)) / 420, 1);
+}
+.fly-end { display: grid; justify-items: center; gap: 6px; pointer-events: none; white-space: nowrap; }
+.fly-end-logo { font: 700 clamp(64px, 15vw, 180px)/1 var(--serif); }
+.fly-end-logo em { font-style: italic; font-weight: 500; color: var(--red); }
+.fly-end-sub { font: 700 clamp(26px, 4vw, 40px)/1 var(--hand); color: var(--ink-2); }
+
+.fly-photo {
+  width: clamp(124px, 17vw, 250px);
+  padding: 7px 7px 26px;
+  border: 0;
   background: var(--paper);
   box-shadow: var(--shadow);
-  transform: translate(var(--x), var(--y)) rotate(var(--r));
+  cursor: zoom-in;
 }
-.hero.is-3d .hero-fallback { opacity: 0; visibility: hidden; transition: opacity .8s, visibility 0s .8s; }
-
-.hero-foot {
+.fly-photo img { width: 100%; }
+.fly-video {
+  width: clamp(176px, 24vw, 360px);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--ink);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: #fff;
+}
+.fly-video img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.fly-yt {
   position: absolute;
-  z-index: 3;
-  inset: auto var(--gutter) max(44px, env(safe-area-inset-bottom));
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 16px;
-  pointer-events: none;
+  top: 8px; left: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #ff0033;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
 }
-.hero-tag { font-size: 16px; font-weight: 500; }
-.hero-hint {
+.fly-video-title {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 26px 10px 8px;
+  background: linear-gradient(transparent, rgb(0 0 0 / .75));
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fly-emoji { font-size: clamp(36px, 5vw, 64px); pointer-events: none; }
+
+.fly-ui { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.fly-ui::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 26svh;
+  background: linear-gradient(transparent, rgb(245 237 225 / .92) 70%);
+}
+.fly-tag, .fly-hint, .fly-links { position: absolute; bottom: max(30px, env(safe-area-inset-bottom)); }
+.fly-tag { left: var(--gutter); font-size: 16px; font-weight: 500; }
+.fly-hint {
+  right: var(--gutter);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: .12em;
   color: var(--ink-2);
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity .6s 1s;
+  opacity: clamp(0, 1 - var(--p) * 25, 1);
 }
-.hero.is-3d .hero-hint { opacity: 1; }
-@media (max-width: 520px) {
-  .hero-foot { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.fly-hint span { display: inline-block; animation: nudge 1.6s ease-in-out infinite; }
+@keyframes nudge { 50% { translate: 0 5px; } }
+.fly-links {
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+.fly-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 99px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 10px 24px -12px rgb(0 0 0 / .5);
+  transition: transform .15s, filter .15s;
+}
+.fly-link:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.fly-link-tg { background: var(--tg); }
+.fly-link-yt { background: #ff0033; }
+.fly-progress { position: absolute; inset: auto 0 0; height: 3px; background: rgb(43 35 32 / .08); }
+.fly-progress span {
+  display: block;
+  height: 100%;
+  background: var(--red);
+  transform-origin: left;
+  transform: scaleX(var(--p));
+}
+
+@media (max-width: 640px) {
+  .fly-tag { left: 0; right: 0; bottom: calc(max(30px, env(safe-area-inset-bottom)) + 64px); text-align: center; }
+  .fly-hint { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fly { height: 100svh; animation: none; }
+  .fly-scene { transform: none; }
 }
 
 /* ---------- бегущая строка ---------- */
@@ -191,7 +282,7 @@ p { text-wrap: pretty; }
   color: var(--paper);
   padding: 16px 0;
   transform: rotate(-1.2deg);
-  margin: -14px -10px 0;
+  margin: 0 -10px;
   position: relative;
   z-index: 4;
 }
