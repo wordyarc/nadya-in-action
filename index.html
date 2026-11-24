@@ -31,6 +31,7 @@
     <nav class="nav-links">
       <a href="#about">Обо мне</a>
       <a href="#diary">Дневник</a>
+      <a href="#youtube">YouTube</a>
       <a class="pill" data-tg target="_blank" rel="noopener">Telegram ↗</a>
     </nav>
   </header>
@@ -75,9 +76,9 @@
           <p class="eyebrow">Привет 👋</p>
           <h2>Я Надя — и это мой <em>маленький</em> уголок в&nbsp;интернете</h2>
           <p>Веду Telegram-канал <b>SM daily</b> — дневник про обычные дни, которые хочется запомнить. Осень, кино, образы, подружки и зеркальные селфи — всё туда.</p>
-          <p>Когда-то снимала YouTube, а по будням меня зовут Надежда Вениаминовна.</p>
+          <p>А ещё у меня есть YouTube: влоги из ДВФУ, корейский, дорамы и Q&amp;A с подружками. По будням меня зовут Надежда Вениаминовна.</p>
           <ul class="chips">
-            <li>📸 фото</li><li>🍂 осень</li><li>🎬 кино</li><li>📚 школа</li><li>☕ daily</li>
+            <li>📸 фото</li><li>🍂 осень</li><li>🎬 кино</li><li>📚 школа</li><li>🇰🇷 корейский</li><li>☕ daily</li>
           </ul>
         </div>
       </div>
@@ -119,6 +120,34 @@
         <p class="eyebrow">Дневник</p>
         <h2>Кадры из <em>SM daily</em></h2>
         <div class="grid" id="grid"></div>
+      </div>
+    </section>
+
+    <!-- ===== YouTube ===== -->
+    <section class="yt" id="youtube">
+      <div class="wrap">
+        <div class="yt-head">
+          <div>
+            <p class="eyebrow">YouTube</p>
+            <h2>Влоги на <em>SM daily</em></h2>
+            <ul class="chips yt-stats" id="ytStats"></ul>
+          </div>
+          <blockquote class="yt-quote">
+            <p id="ytQuote"></p>
+            <cite>— из описания канала</cite>
+          </blockquote>
+        </div>
+      </div>
+      <div class="yt-rail-wrap">
+        <ul class="yt-rail" id="ytRail"></ul>
+        <button class="yt-arrow yt-prev" data-dir="-1" aria-label="Назад">←</button>
+        <button class="yt-arrow yt-next" data-dir="1" aria-label="Вперёд">→</button>
+      </div>
+      <div class="wrap yt-foot">
+        <a class="btn btn-yt" data-yt target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.7 15.1V8.9l5.8 3.1-5.8 3.1Z"/></svg>
+          Открыть канал
+        </a>
       </div>
     </section>
 

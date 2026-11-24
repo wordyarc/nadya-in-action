@@ -1,4 +1,4 @@
-import { SITE, PHOTOS } from "./data.js";
+import { SITE, PHOTOS, YOUTUBE } from "./data.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -105,8 +105,49 @@ if (reduceMotion) {
   }).observe(video);
 }
 
+/* ---------- YouTube ---------- */
+const plural = (n, one, few, many) => {
+  const m10 = n % 10, m100 = n % 100;
+  return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many;
+};
+const fmtViews = (n) =>
+  n >= 1000 ? `${String(+(n / 1000).toFixed(1)).replace(".", ",")} тыс. просмотров` : `${n} ${plural(n, "просмотр", "просмотра", "просмотров")}`;
+const fmtTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+$("#ytQuote").textContent = YOUTUBE.quote;
+[`▶ ${YOUTUBE.videos} видео`, `♥ ${YOUTUBE.subscribers} подписчиков`].forEach((t) => {
+  const li = document.createElement("li");
+  li.textContent = t;
+  $("#ytStats").append(li);
+});
+
+const rail = $("#ytRail");
+YOUTUBE.list.forEach((v) => {
+  const li = document.createElement("li");
+  li.className = "yt-card";
+  li.innerHTML = `
+    <a target="_blank" rel="noopener">
+      <span class="yt-cover"><img width="640" height="360" loading="lazy" decoding="async" alt=""><span class="yt-time"></span><span class="yt-play" aria-hidden="true"></span></span>
+      <span class="yt-title"></span>
+      <span class="yt-views"></span>
+    </a>`;
+  li.querySelector("a").href = `https://www.youtube.com/watch?v=${v.id}`;
+  li.querySelector("img").src = `img/yt/${v.id}.webp`;
+  li.querySelector(".yt-time").textContent = fmtTime(v.duration);
+  li.querySelector(".yt-title").textContent = v.title;
+  li.querySelector(".yt-views").textContent = fmtViews(v.views);
+  rail.append(li);
+});
+$$(".yt-arrow").forEach((b) =>
+  b.addEventListener("click", () => {
+    const card = rail.querySelector(".yt-card");
+    rail.scrollBy({ left: +b.dataset.dir * (card.offsetWidth + 20) * 2, behavior: reduceMotion ? "auto" : "smooth" });
+  })
+);
+
 /* ---------- ссылки ---------- */
 $$("[data-tg]").forEach((a) => (a.href = SITE.telegram.url));
+$$("[data-yt]").forEach((a) => (a.href = SITE.youtube));
 if (SITE.youtube) {
   const yt = $("#ytLink");
   yt.href = SITE.youtube;
